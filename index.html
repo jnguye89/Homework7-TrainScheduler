@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Train Scheduler</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<h1>Train Schedule</h1>
+			<p>See all train schedules below</p>
+		</div>
+
+		<div class="panel panel-info">
+			<div class="panel-heading">Current Train Schedule</div>
+ 				<div class="panel-body" id="train-table" >
+    				
+ 				</div>
+		</div>
+
+		<div class="panel panel-info">
+			<div class="panel-heading">Add Train</div>
+ 				<div class="panel-body">
+					<form>
+					  <div class="form-group">
+					    <label for="train-name">Train Name</label>
+					    <input type="text" class="form-control" id="train-name" placeholder="Train Name">
+					  </div>
+					  <div class="form-group">
+					    <label for="train-destination">Destination</label>
+					    <input type="text" class="form-control" id="train-destination" placeholder="Destination">
+					  </div>
+					  <div class="form-group">
+					    <label for="train-time">First Train Time</label>
+					    <input type="time" class="form-control" id="train-time" placeholder="00:00 AM/PM">
+					  </div>
+					  <div class="form-group">
+					    <label for="train-interval">Train Frequency</label>
+					    <input type="text" class="form-control" id="train-interval" placeholder="minutes">
+					  </div>
+					  
+					  <button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+ 				</div>
+			</div>
+		</div>
+	</div>
+
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="assets/main.js"></script>
+
+
+</body>
+</html>
