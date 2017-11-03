@@ -36,22 +36,8 @@ database.ref().on("value", function(snapshot){
 	
 	snapshot.forEach(function(childSnapshot){
 
-		var currentTime = miliNowFunction();
-		var timeSplit = childSnapshot.val().firstTime.split(":");
+		var nextTrain = callNextArrival(childSnapshot.val().firstTime, childSnapshot.val().trainInterval);
 		
-		var firstTrainMilli = (timeSplit[0] * 60 * 60 * 1000) + (timeSplit[1] * 60 * 1000);
-
-		while (currentTime > firstTrainMilli) {
-			firstTrainMilli  = firstTrainMilli + (childSnapshot.val().trainInterval * 60 * 1000);
-		}
-
-		var lastTrain = firstTrainMilli - (childSnapshot.val().trainInterval * 60 * 1000);
-
-		var nextTrainMilli = currentTime - lastTrain;
-		console.log(nextTrainMilli);
-		var nextTrainMin = nextTrainMilli/1000/60;
-		console.log(Math.floor(nextTrainMin));
-
 
 		//display each train schedule for each object in database
 		var addRow = $("<tr>");
@@ -59,11 +45,11 @@ database.ref().on("value", function(snapshot){
 		addRow.append("<td>" + childSnapshot.val().trainName);
 		addRow.append("<td>" + childSnapshot.val().destination);
 		addRow.append("<td>" + childSnapshot.val().trainInterval);
+		addRow.append("<td>" + nextTrain.format("HH:mm"));
 		addRow.append("<td>" + childSnapshot.val().trainInterval);
-		addRow.append("<td>" + Math.floor(nextTrainMin));
 		addRowBody.append(addRow);
 		$(".table").append(addRowBody);
-
+		
 		
 		
 
@@ -99,20 +85,37 @@ $("button").on("click", function() {
   })
 })
 
-var miliNowFunction = function(){
-
-	//convert the current time to milliseconds
-		var dateNowHour = moment().hour();
-		var dateNowMinutes = moment().minute();
-		var dateNowSeconds = moment().second();
-		var dateNowMilli = moment().millisecond();
-		var dateNow = (dateNowHour*60*60*1000)+(dateNowMinutes*60*1000)+(dateNowSeconds*1000)+dateNowMilli;
-	
-		
-		return dateNow;
+function callNextArrival(trainTime, frequency) {
+  var firstDeparture = moment(trainTime, "HH:mm");
+  console.log(firstDeparture);
+  var currentTime = moment();
+  console.log(currentTime);
+  var currentInterval = moment(firstDeparture);
+  var nextTrain;
+  var counter = 0;
+    
+    // Assume there is no next train to start with
+    while(!nextTrain && counter < 500) {
+      
+      console.log('Train Arrival :: ', currentInterval.format("HH:mm"))
+      // Define the situation where first train time is after current time
+      if (firstDeparture.isAfter(currentTime)) {
+        console.log('train has not left yet.')
+      }
+      
+      if ( currentInterval.isAfter(currentTime) ) {
+        // Shows next train departure time
+        nextTrain = currentInterval
+        
+      } else {
+        // Shows all previous departure time
+        currentInterval.add(frequency, 'minutes')
+      }
+      // Shows mins away the next train
+      //var timeUntil = currentTime.to(nextTrain)
+      //console.log('Until next Train: ', timeUntil)
+      counter++
+    }
+    return nextTrain
 }
 
-var firstTrainMilliFunction = function(){
-
-	
-}
