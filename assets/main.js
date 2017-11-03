@@ -38,6 +38,7 @@ database.ref().on("value", function(snapshot){
 
 		var nextTrain = callNextArrival(childSnapshot.val().firstTime, childSnapshot.val().trainInterval);
 		
+		var minutesAway = callMinutesAway(nextTrain);
 
 		//display each train schedule for each object in database
 		var addRow = $("<tr>");
@@ -46,15 +47,9 @@ database.ref().on("value", function(snapshot){
 		addRow.append("<td>" + childSnapshot.val().destination);
 		addRow.append("<td>" + childSnapshot.val().trainInterval);
 		addRow.append("<td>" + nextTrain.format("HH:mm"));
-		addRow.append("<td>" + childSnapshot.val().trainInterval);
+		addRow.append("<td>" + minutesAway.format("m"));
 		addRowBody.append(addRow);
 		$(".table").append(addRowBody);
-		
-		
-		
-
-		// console.log(firstTrainMilli);
-
 	})
 })
 
@@ -84,12 +79,18 @@ $("button").on("click", function() {
 
   })
 })
+function callMinutesAway(nextTrain){
+	var currentTime = moment();
+	var nextDeparture = moment(nextTrain);
+	var minutesAway = nextDeparture - currentTime;
+	return moment(minutesAway);
+}
 
 function callNextArrival(trainTime, frequency) {
   var firstDeparture = moment(trainTime, "HH:mm");
-  console.log(firstDeparture);
+  // console.log(firstDeparture);
   var currentTime = moment();
-  console.log(currentTime);
+  // console.log(currentTime);
   var currentInterval = moment(firstDeparture);
   var nextTrain;
   var counter = 0;
@@ -97,7 +98,7 @@ function callNextArrival(trainTime, frequency) {
     // Assume there is no next train to start with
     while(!nextTrain && counter < 500) {
       
-      console.log('Train Arrival :: ', currentInterval.format("HH:mm"))
+      // console.log('Train Arrival :: ', currentInterval.format("HH:mm"))
       // Define the situation where first train time is after current time
       if (firstDeparture.isAfter(currentTime)) {
         console.log('train has not left yet.')
